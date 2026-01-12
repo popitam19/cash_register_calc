@@ -1,154 +1,178 @@
-<!-- test -->
 <!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>レジ締め計算用サイト</title>
- 
-<!-- サイトの形式を指定 -->
+
   <style>
-  /* サイト全体↓ */
-  body {
-    font-family: system-ui, sans-serif;
-    padding: 18px;
-    color: #111827;
-    background-color: #ffe4ec;
-  }
+    /* サイト全体 */
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 18px;
+      color: #111827;
+      background-color: #ffe4ec;
+    }
 
-  /* 見出し① */
-  h1 {
-    margin: 0 0 10px;
-  }
+    /* 見出し */
+    h1 { margin: 0 0 10px; }
+    h2 { margin: 0 0 20px; }
+    h3 {
+      color: #e11d48;
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-  /* 見出し② */
-  h2 {
-    margin: 0 0 20px;
-  }
+    /* 補足文字 */
+    .muted {
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .muted2 {
+      color: #e11d48;
+      font-size: 14px;
+      font-weight: bold;
+    }
 
-  /* 見出し③ */
-  h3 {
-    color: #e11d48;
-    font-size: 18px;
-    font-weight: bold;
-  }
+    /* 入力エリア */
+    .card {
+      border: 1px solid #f5a3bd;
+      border-radius: 12px;
+      padding: 14px;
+      margin: 12px 0;
+      background-color: #ffffff;
+    }
 
-  /* 補足文字① */
-  .muted {
-    color: #6b7280;
-    font-size: 14px;
-  }
-  
-  /* 補足文字② */
-  .muted2 {
-    color: #e11d48;
-    font-size: 14px;
-    font-weight: bold;
-  }
+    /* 入力レイアウト（PC） */
+    .grid {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 8px 12px;
+      align-items: center;
+    }
 
-  /* 入力エリア */
-  .card {
-    border: 1px solid #f5a3bd;
-    border-radius: 12px;
-    padding: 14px;
-    margin: 12px 0;
-    background-color: #ffffff;
-  }
+    /* 入力欄＋単位（本/枚） */
+    .input-with-unit {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 260px; /* PCで伸びすぎ防止 */
+    }
 
-  /* 入力レイアウト */
-  .grid {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 8px 12px;
-    align-items: center;
-  }
+    /* 入力ボックス（基本：幅100%で安全） */
+    input {
+      padding: 8px 10px;
+      border: 2px solid #e11d48;
+      border-radius: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      background-color: #fff;
+    }
 
-  /* 入力ボックス */
-  input {
-    padding: 8px 10px;
-    border: 2px solid #e11d48;
-    border-radius: 10px;
-    width: 180px;
-    background-color: #fff;
-  }
+    .input-with-unit input {
+      flex: 1;
+      min-width: 0;
+    }
 
-  /* ボタン */
-  button {
-    padding: 10px 14px;
-    border: none;
-    border-radius: 10px;
-    background: #e11d48;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-  }
+    .unit {
+      white-space: nowrap;
+      font-weight: bold;
+    }
 
-  /* 注意文 */
-  .warn {
-    color: #b45309;
-    font-size: 14px;
-    margin-top: 10px;
-  }
+    /* ボタン */
+    button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      background: #e11d48;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-  /* 結果表 */
-  .result-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-top: 8px;
-    background-color: #ffd6e3;
-    border: 2px solid #000;
-  }
+    /* 注意文 */
+    .warn {
+      color: #b45309;
+      font-size: 14px;
+      margin-top: 10px;
+    }
 
-  .result-table th {
-    background-color: #e11d48;
-    color: #000;
-    border: 1px solid #000;
-    padding: 8px;
-    text-align: right;
-  }
+    /* 結果表 */
+    .result-table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 8px;
+      background-color: #ffd6e3;
+      border: 2px solid #000;
+    }
+    .result-table th {
+      background-color: #e11d48;
+      color: #000;
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: right;
+    }
+    .result-table td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: right;
+      color: #000;
+      background-color: #ffd6e3;
+    }
+    .result-table th:first-child,
+    .result-table td:first-child {
+      text-align: left;
+    }
 
-  .result-table td {
-    border: 1px solid #000;
-    padding: 8px;
-    text-align: right;
-    color: #000;
-    background-color: #ffd6e3;
-  }
+    /* スマホ対応 */
+    @media (max-width: 600px) {
+      body { padding: 12px; }
 
-  .result-table th:first-child,
-  .result-table td:first-child {
-    text-align: left;
-  }
-</style>
+      /* 1列にして崩れない */
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
 
+      label {
+        font-weight: 600;
+        margin-top: 8px;
+      }
+
+      .input-with-unit {
+        max-width: 100%; /* スマホは全幅OK */
+        margin-bottom: 8px;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <h1>レジ締め計算用サイト</h1>
-  <p class="muted">作成者：大川　最終更新日：2026年1月12日
-  <p class="muted2">すべての入力が終わったら、「結果表示」ボタンを押してください。一番下に結果が表示されます。
+  <p class="muted">作成者：大川　最終更新日：2026年1月12日</p>
+  <p class="muted2">すべての入力が終わったら、「結果表示」ボタンを押してください。一番下に結果が表示されます。</p>
   <p class="muted2">入力はすべて 半角数字 でお願いします。</p>
 
   <div class="card">
     <h2>Step1　棒金（本数を入力してください）</h2>
     <div class="grid">
       <label>10円棒</label>
-        <div class="input-with-unit">
-          <input id="bar10" type="number" min="0" step="1" value="0">
-          <span class="unit">本</span>
-        </div>
-     
+      <div class="input-with-unit">
+        <input id="bar10" type="number" min="0" step="1" value="0">
+        <span class="unit">本</span>
+      </div>
+
       <label>50円棒</label>
-        <div class="input-with-unit">
-          <input id="bar50" type="number" min="0" step="1" value="0">
-          <span class="unit">本</span>
-        </div>
-     
+      <div class="input-with-unit">
+        <input id="bar50" type="number" min="0" step="1" value="0">
+        <span class="unit">本</span>
+      </div>
+
       <label>100円棒</label>
-        <div class="input-with-unit">
-          <input id="bar100" type="number" min="0" step="1" value="0">
-          <span class="unit">本</span>
-        </div>
+      <div class="input-with-unit">
+        <input id="bar100" type="number" min="0" step="1" value="0">
+        <span class="unit">本</span>
+      </div>
     </div>
   </div>
 
@@ -156,60 +180,57 @@
     <h2>Step2　硬貨（枚数を入力してください）</h2>
     <div class="grid">
       <label>10円玉</label>
-        <div class="input-with-unit">
-          <input id="c10" type="number" min="0" step="1" value="0">
-          <span class="unit">枚</span>
-        </div>
-     
+      <div class="input-with-unit">
+        <input id="c10" type="number" min="0" step="1" value="0">
+        <span class="unit">枚</span>
+      </div>
+
       <label>50円玉</label>
-        <div class="input-with-unit">
-          <input id="c50" type="number" min="0" step="1" value="0">
-          <span class="unit">枚</span>
-        </div>
-     
+      <div class="input-with-unit">
+        <input id="c50" type="number" min="0" step="1" value="0">
+        <span class="unit">枚</span>
+      </div>
+
       <label>100円玉</label>
-        <div class="input-with-unit">
-          <input id="c100" type="number" min="0" step="1" value="0">
-          <span class="unit">枚</span>
-        </div>
+      <div class="input-with-unit">
+        <input id="c100" type="number" min="0" step="1" value="0">
+        <span class="unit">枚</span>
+      </div>
 
       <label>500円玉</label>
-        <div class="input-with-unit">
-          <input id="c500" type="number" min="0" step="1" value="0">
-          <span class="unit">枚</span>
-        </div>
-
+      <div class="input-with-unit">
+        <input id="c500" type="number" min="0" step="1" value="0">
+        <span class="unit">枚</span>
+      </div>
     </div>
   </div>
 
   <div class="card">
     <h2>Step3　紙幣（枚数を入力してください）</h2>
     <div class="grid">
-
       <label>1,000円札</label>
-        <div class="input-with-unit">
-          <input id="b1000" type="number" min="0" step="1" value="0">
-          <span class="unit">枚</span>
-        </div>
-     
+      <div class="input-with-unit">
+        <input id="b1000" type="number" min="0" step="1" value="0">
+        <span class="unit">枚</span>
+      </div>
+
       <label>2,000円札</label>
-        <div class="input-with-unit">
-          <input id="b2000" type="number" min="0" step="1" value="0">
-          <span class="unit">枚</span>
-        </div>
-     
+      <div class="input-with-unit">
+        <input id="b2000" type="number" min="0" step="1" value="0">
+        <span class="unit">枚</span>
+      </div>
+
       <label>5,000円札</label>
-        <div class="input-with-unit">
-          <input id="b5000" type="number" min="0" step="1" value="0">
-          <span class="unit">枚</span>
-        </div>
+      <div class="input-with-unit">
+        <input id="b5000" type="number" min="0" step="1" value="0">
+        <span class="unit">枚</span>
+      </div>
 
       <label>10,000円札</label>
-        <div class="input-with-unit">
-          <input id="b10000" type="number" min="0" step="1" value="0">
-          <span class="unit">枚</span>
-        </div>
-
+      <div class="input-with-unit">
+        <input id="b10000" type="number" min="0" step="1" value="0">
+        <span class="unit">枚</span>
+      </div>
     </div>
   </div>
 
@@ -247,5 +268,3 @@
   <script src="./app.js"></script>
 </body>
 </html>
-
-
