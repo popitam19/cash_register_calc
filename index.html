@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>レジ締め計算用サイト</title>
+ 
+<!-- サイトの形式を指定 -->
+  <style>
+  /* サイト全体↓ */
+  body {
+    font-family: system-ui, sans-serif;
+    padding: 18px;
+    color: #111827;
+    background-color: #ffe4ec;
+  }
+
+  /* 見出し① */
+  h1 {
+    margin: 0 0 10px;
+  }
+
+  /* 見出し② */
+  h2 {
+    margin: 0 0 20px;
+  }
+
+  /* 見出し③ */
+  h3 {
+    color: #e11d48;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  /* 補足文字① */
+  .muted {
+    color: #6b7280;
+    font-size: 14px;
+  }
+  
+  /* 補足文字② */
+  .muted2 {
+    color: #e11d48;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* 入力エリア */
+  .card {
+    border: 1px solid #f5a3bd;
+    border-radius: 12px;
+    padding: 14px;
+    margin: 12px 0;
+    background-color: #ffffff;
+  }
+
+  /* 入力レイアウト */
+  .grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 8px 12px;
+    align-items: center;
+  }
+
+  /* 入力ボックス */
+  input {
+    padding: 8px 10px;
+    border: 2px solid #e11d48;
+    border-radius: 10px;
+    width: 180px;
+    background-color: #fff;
+  }
+
+  /* ボタン */
+  button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    background: #e11d48;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  /* 注意文 */
+  .warn {
+    color: #b45309;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  /* 結果表 */
+  .result-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 8px;
+    background-color: #ffd6e3;
+    border: 2px solid #000;
+  }
+
+  .result-table th {
+    background-color: #e11d48;
+    color: #000;
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: right;
+  }
+
+  .result-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: right;
+    color: #000;
+    background-color: #ffd6e3;
+  }
+
+  .result-table th:first-child,
+  .result-table td:first-child {
+    text-align: left;
+  }
+</style>
+
+</head>
+
+<body>
+  <h1>レジ締め計算用サイト</h1>
+  <p class="muted">作成者：大川　最終更新日：2026年1月12日
+  <p class="muted2">すべての入力が終わったら、「結果表示」ボタンを押してください。一番下に結果が表示されます。
+  <p class="muted2">入力はすべて 半角数字 でお願いします。</p>
+
+  <div class="card">
+    <h2>Step1　棒金（本数を入力してください）</h2>
+    <div class="grid">
+      <label>10円棒</label>
+        <div class="input-with-unit">
+          <input id="bar10" type="number" min="0" step="1" value="0">
+          <span class="unit">本</span>
+        </div>
+     
+      <label>50円棒</label>
+        <div class="input-with-unit">
+          <input id="bar50" type="number" min="0" step="1" value="0">
+          <span class="unit">本</span>
+        </div>
+     
+      <label>100円棒</label>
+        <div class="input-with-unit">
+          <input id="bar100" type="number" min="0" step="1" value="0">
+          <span class="unit">本</span>
+        </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Step2　硬貨（枚数を入力してください）</h2>
+    <div class="grid">
+      <label>10円玉</label>
+        <div class="input-with-unit">
+          <input id="c10" type="number" min="0" step="1" value="0">
+          <span class="unit">本</span>
+        </div>
+     
+      <label>50円玉</label>
+        <div class="input-with-unit">
+          <input id="c50" type="number" min="0" step="1" value="0">
+          <span class="unit">本</span>
+        </div>
+     
+      <label>100円玉</label>
+        <div class="input-with-unit">
+          <input id="c100" type="number" min="0" step="1" value="0">
+          <span class="unit">本</span>
+        </div>
+
+      <label>500円玉</label>
+        <div class="input-with-unit">
+          <input id="c500" type="number" min="0" step="1" value="0">
+          <span class="unit">本</span>
+        </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Step3　紙幣（枚数を入力してください）</h2>
+    <div class="grid">
+
+      <label>1,000円札</label>
+        <div class="input-with-unit">
+          <input id="b1000" type="number" min="0" step="1" value="0">
+          <span class="unit">枚</span>
+        </div>
+     
+      <label>2,000円札</label>
+        <div class="input-with-unit">
+          <input id="b2000" type="number" min="0" step="1" value="0">
+          <span class="unit">枚</span>
+        </div>
+     
+      <label>5,000円札</label>
+        <div class="input-with-unit">
+          <input id="b5000" type="number" min="0" step="1" value="0">
+          <span class="unit">枚</span>
+        </div>
+
+      <label>10,000円札</label>
+        <div class="input-with-unit">
+          <input id="b10000" type="number" min="0" step="1" value="0">
+          <span class="unit">枚</span>
+        </div>
+
+    </div>
+  </div>
+
+  <button id="calc">結果表示</button>
+
+  <!-- 計算後にだけ表示 -->
+  <div class="card" id="resultArea" style="display:none;">
+    <h2>Step4　封筒に売上金を入れる</h2>
+    <h2 id="salesOnly">売上金合計：-</h2>
+    <p class="muted2">① 封筒の「現金」欄に上の売上金を記入します。</p>
+    <p class="muted2">② 精算レシートの「総売上」を封筒の「レジP」欄に記入します。</p>
+    <p class="muted2">③ PayPay、auPAY、カードの売上を各欄に記入します。</p>
+    <p class="muted2">④ 出金レシートの金額を「出金」欄に記入します。</p>
+    <p class="muted2">⑤ 売上金とレシートをまとめて緑の封筒に入れてキッチンに持ってきてください。</p>
+
+    <h2>両替金管理表</h2>
+
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th style="text-align:right;">本数</th>
+          <th style="text-align:right;">枚数</th>
+          <th style="text-align:right;">金額</th>
+        </tr>
+      </thead>
+      <tbody id="envelopeRows"></tbody>
+    </table>
+
+    <p class="muted2">⑥ 上の表を写してレジの中に入れておいてください。</p>
+
+    <div id="warn" class="warn"></div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
