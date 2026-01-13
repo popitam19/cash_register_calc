@@ -149,9 +149,9 @@
 
 <body>
   <h1>レジ締め計算用サイト</h1>
-  <p class="muted">作成者：大川　最終更新日：2026年1月12日</p>
+  <p class="muted">作成者：大川　最終更新日：2026年1月13日</p>
   <p class="muted2">すべての入力が終わったら、「結果表示」ボタンを押してください。一番下に結果が表示されます。</p>
-  <p class="muted2">入力はすべて 半角数字 でお願いします。</p>
+  <p class="muted2">入力はすべて "半角数字" でお願いします。</p>
 
   <div class="card">
     <h2>Step1　棒金（本数を入力してください）</h2>
@@ -239,6 +239,27 @@
   <!-- 計算後にだけ表示 -->
   <div class="card" id="resultArea" style="display:none;">
     <h2>Step4　封筒に売上金を入れる</h2>
+   
+    <h2>内訳</h2>
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th>種別</th>
+          <th style="text-align:right;">10円</th>
+          <th style="text-align:right;">50円</th>
+          <th style="text-align:right;">100円</th>
+          <th style="text-align:right;">500円</th>
+          <th style="text-align:right;">1,000円</th>
+          <th style="text-align:right;">2,000円</th>
+          <th style="text-align:right;">5,000円</th>
+          <th style="text-align:right;">10,000円</th>
+        </tr>
+      </thead>
+    <tbody id="splitTableBody"></tbody>
+
+    </table>
+    
+    <p class="muted2"></p>
     <h2 id="salesOnly">売上金合計：-</h2>
     <p class="muted2">① 封筒の「現金」欄に上の売上金を記入します。</p>
     <p class="muted2">② 精算レシートの「総売上」を封筒の「レジP」欄に記入します。</p>
@@ -246,7 +267,7 @@
     <p class="muted2">④ 出金レシートの金額を「出金」欄に記入します。</p>
     <p class="muted2">⑤ 売上金とレシートをまとめて緑の封筒に入れてキッチンに持ってきてください。</p>
 
-    <h2>両替金管理表</h2>
+    <h2>レジ金管理表</h2>
 
     <table class="result-table">
       <thead>
