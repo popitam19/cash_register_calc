@@ -16,17 +16,54 @@ function addEnvelopeRow(tbody, label, rolls, pieces, amount) {
   tbody.appendChild(tr);
 }
 
+/* ===== 追加：レジ金/売上金 の枚数表を描画する関数 ===== */
+function renderSplitTable(tbodyId, changeCounts, salesCounts) {
+  const tb = document.getElementById(tbodyId);
+  if (!tb) return;
+
+  tb.innerHTML = "";
+
+  const trChange = document.createElement("tr");
+  trChange.innerHTML = `
+    <td>レジ金</td>
+    <td>${changeCounts.y10}枚</td>
+    <td>${changeCounts.y50}枚</td>
+    <td>${changeCounts.y100}枚</td>
+    <td>${changeCounts.y500}枚</td>
+    <td>${changeCounts.y1000}枚</td>
+    <td>${changeCounts.y2000}枚</td>
+    <td>${changeCounts.y5000}枚</td>
+    <td>${changeCounts.y10000}枚</td>
+  `;
+
+  const trSales = document.createElement("tr");
+  trSales.innerHTML = `
+    <td>売上金</td>
+    <td>${salesCounts.y10}枚</td>
+    <td>${salesCounts.y50}枚</td>
+    <td>${salesCounts.y100}枚</td>
+    <td>${salesCounts.y500}枚</td>
+    <td>${salesCounts.y1000}枚</td>
+    <td>${salesCounts.y2000}枚</td>
+    <td>${salesCounts.y5000}枚</td>
+    <td>${salesCounts.y10000}枚</td>
+  `;
+
+  tb.appendChild(trChange);
+  tb.appendChild(trSales);
+}
+
 /**
  * 目的：
- * - 棒金は全て両替金に固定
- * - 低額から優先して両替金に入れる（ただし最終的に両替金=50,000円ぴったりが可能な範囲で）
+ * - 棒金は全てレジ金に固定
+ * - 低額から優先してレジ金に入れる（ただし最終的にレジ金=50,000円ぴったりが可能な範囲で）
  * - 2000円札は必ず売上
  *
  * アプローチ：
- * - 棒金で確定した両替金を引いた残り(need)を、硬貨→紙幣の順でちょうど埋める
- * - 硬貨は「両替金として使う金額」をDPで探索（0〜need）
+ * - 棒金で確定したレジ金を引いた残り(need)を、硬貨→紙幣の順でちょうど埋める
+ * - 硬貨は「レジ金として使う金額」をDPで探索（0〜need）
  * - その硬貨金額に対して、紙幣(1000/5000/10000)で残りが埋められるかをチェック
- * - 複数解がある場合は「硬貨をできるだけ多く両替金に残す」かつ「低額硬貨優先」かつ「低額紙幣優先」で選ぶ
+ * - 複数解がある場合は「硬貨をできるだけ多くレジ金に残す」かつ「低額硬貨優先」かつ「低額紙幣優先」で選ぶ
  */
 
 function betterPlan(a, b) {
@@ -89,7 +126,7 @@ function findBestPlan({
 
   const needAfterBars = TARGET - barTotal;
 
-  // DP: dp[amt] = 硬貨で amt 円を両替金にできるときの枚数構成（低額優先で保持）
+  // DP: dp[amt] = 硬貨で amt 円をレジ金にできるときの枚数構成（低額優先で保持）
   const dp = Array(needAfterBars + 1).fill(null);
   dp[0] = { ex10: 0, ex50: 0, ex100: 0, ex500: 0 };
 
@@ -142,7 +179,7 @@ function findBestPlan({
   }
 
   if (!best) {
-    return { ok: false, reason: "現在の組み合わせでは、両替金を50,000円ぴったりにできません。：エラー" };
+    return { ok: false, reason: "現在の組み合わせでは、レジ金を50,000円ぴったりにできません。：エラー" };
   }
 
   return best;
@@ -166,7 +203,7 @@ document.getElementById("calc").onclick = () => {
   const b5000  = getInt("b5000");
   const b10000 = getInt("b10000");
 
-  // 棒金（全部両替金）
+  // 棒金（全部レジ金）
   const amtBar10  = bar10  * 500;
   const amtBar50  = bar50  * 2500;
   const amtBar100 = bar100 * 5000;
@@ -185,11 +222,8 @@ document.getElementById("calc").onclick = () => {
   tbody.innerHTML = "";
 
   if (!plan.ok) {
-    // 不可能：棒金だけ両替金、他は全部売上として表示
+    // 不可能：棒金だけレジ金、他は全部売上として表示
     warn.push(plan.reason);
-
-    const ex10 = 0, ex50 = 0, ex100 = 0, ex500 = 0;
-    const ex1000 = 0, ex5000 = 0, ex10000 = 0;
 
     const salesTotal =
       (c10*10 + c50*50 + c100*100 + c500*500) +
@@ -197,14 +231,22 @@ document.getElementById("calc").onclick = () => {
 
     document.getElementById("salesOnly").textContent = `売上金合計：${yen(salesTotal)}`;
 
-    addEnvelopeRow(tbody, "10円",   `${bar10}本`,  `0枚`, yenToNum(amtBar10));
-    addEnvelopeRow(tbody, "50円",   `${bar50}本`,  `0枚`, yenToNum(amtBar50));
-    addEnvelopeRow(tbody, "100円",  `${bar100}本`, `0枚`, yenToNum(amtBar100));
+    addEnvelopeRow(tbody, "10円",   `${bar10}本`,  `0枚`, amtBar10);
+    addEnvelopeRow(tbody, "50円",   `${bar50}本`,  `0枚`, amtBar50);
+    addEnvelopeRow(tbody, "100円",  `${bar100}本`, `0枚`, amtBar100);
     addEnvelopeRow(tbody, "500円",  "",            `0枚`, 0);
-    addEnvelopeRow(tbody, "1,000円", "",            `0枚`, 0);
-    addEnvelopeRow(tbody, "2,000円", "",            `0枚`, 0);
-    addEnvelopeRow(tbody, "5,000円", "",            `0枚`, 0);
-    addEnvelopeRow(tbody, "10,000円","",            `0枚`, 0);
+    addEnvelopeRow(tbody, "1,000円", "",           `0枚`, 0);
+    addEnvelopeRow(tbody, "2,000円", "",           `0枚`, 0);
+    addEnvelopeRow(tbody, "5,000円", "",           `0枚`, 0);
+    addEnvelopeRow(tbody, "10,000円","",           `0枚`, 0);
+
+    /* ===== 追加：レジ金/売上金 の枚数表（不可能時） ===== */
+    renderSplitTable(
+      "splitTableBody",
+      { y10: 0, y50: 0, y100: 0, y500: 0, y1000: 0, y2000: 0, y5000: 0, y10000: 0 },
+      { y10: c10, y50: c50, y100: c100, y500: c500, y1000: b1000, y2000: b2000, y5000: b5000, y10000: b10000 }
+    );
+
 
     document.getElementById("warn").textContent = "注意: " + warn.join(" / ");
     return;
@@ -223,7 +265,7 @@ document.getElementById("calc").onclick = () => {
   // 2000円札は売上固定
   const ex2000 = 0;
 
-  // 両替金（封筒）各金額
+  // レジ金（封筒）各金額
   const amt10   = ex10   * 10;
   const amt50   = ex50   * 50;
   const amt100  = ex100  * 100;
@@ -250,17 +292,17 @@ document.getElementById("calc").onclick = () => {
 
   document.getElementById("salesOnly").textContent = `売上金合計：${yen(salesTotal)}`;
 
-  // 封筒に入れること（両替金）表：指定形式
+  // 封筒に入れること（レジ金）表：指定形式
   addEnvelopeRow(tbody, "10円",    `${bar10}本`,   `${ex10}枚`,    amtBar10  + amt10);
   addEnvelopeRow(tbody, "50円",    `${bar50}本`,   `${ex50}枚`,    amtBar50  + amt50);
   addEnvelopeRow(tbody, "100円",   `${bar100}本`,  `${ex100}枚`,   amtBar100 + amt100);
   addEnvelopeRow(tbody, "500円",   "",             `${ex500}枚`,   amt500);
-  addEnvelopeRow(tbody, "1,000円",  "",             `${ex1000}枚`,  amt1000);
-  addEnvelopeRow(tbody, "2,000円",  "",             `0枚`,         amt2000);
-  addEnvelopeRow(tbody, "5,000円",  "",             `${ex5000}枚`,  amt5000);
-  addEnvelopeRow(tbody, "10,000円", "",             `${ex10000}枚`, amt10000);
+  addEnvelopeRow(tbody, "1,000円", "",             `${ex1000}枚`,  amt1000);
+  addEnvelopeRow(tbody, "2,000円", "",             `0枚`,         amt2000);
+  addEnvelopeRow(tbody, "5,000円", "",             `${ex5000}枚`,  amt5000);
+  addEnvelopeRow(tbody, "10,000円","",             `${ex10000}枚`, amt10000);
 
-  // 最終チェック：両替金は必ず50,000円
+  // 最終チェック：レジ金は必ず50,000円
   const exchangeTotal =
     barTotal +
     amt10 + amt50 + amt100 + amt500 +
@@ -271,6 +313,32 @@ document.getElementById("calc").onclick = () => {
   }
 
   document.getElementById("warn").textContent = warn.length ? "注意: " + warn.join(" / ") : "";
+
+  /* ===== 追加：レジ金/売上金 の枚数表（成功時） ===== */
+  renderSplitTable(
+  "splitTableBody",
+  {
+    y10: ex10,
+    y50: ex50,
+    y100: ex100,
+    y500: ex500,
+    y1000: ex1000,
+    y2000: 0,
+    y5000: ex5000,
+    y10000: ex10000
+  },
+  {
+    y10: sales10,
+    y50: sales50,
+    y100: sales100,
+    y500: sales500,
+    y1000: sales1000,
+    y2000: sales2000,
+    y5000: sales5000,
+    y10000: sales10000
+  }
+);
+
 
   // 内部用：yenToNum（不可能時の表示にだけ使用）
   function yenToNum(x) { return x; }
