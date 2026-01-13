@@ -144,6 +144,51 @@
         margin-bottom: 8px;
       }
     }
+
+    /* ============================
+       追加：内訳（splitTable）だけスマホで横スクロール対応
+       ※HTMLを変えずに、#splitTableBody を含む表を特定して適用
+       ============================ */
+
+    /* splitTableBody を持つ tbody を含む table を「ブロック化してスクロール可能」にする */
+    #splitTableBody {
+      /* tbody自体にはスクロールを付けられないので、下のCSSで table に付ける */
+    }
+
+    /* tbody#splitTableBody を含む table.result-table に対して適用 */
+    /* 内訳テーブルだけ：右端の余計な背景を消して、横スクロール対応 */
+    table.result-table:has(#splitTableBody) {
+      display: inline-block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      width: max-content;
+      background-color: transparent;
+    }
+
+
+    /* 中身のテーブル幅を確保（列が潰れない） */
+    table.result-table:has(#splitTableBody) thead,
+    table.result-table:has(#splitTableBody) tbody,
+    table.result-table:has(#splitTableBody) tr {
+      width: max-content;
+    }
+
+    /* セルの最小幅を確保（スマホで詰まり過ぎるのを防止） */
+    table.result-table:has(#splitTableBody) th,
+    table.result-table:has(#splitTableBody) td {
+      min-width: 88px;
+    }
+
+    /* 先頭列（種別）は少し広め */
+    table.result-table:has(#splitTableBody) th:first-child,
+    table.result-table:has(#splitTableBody) td:first-child {
+      min-width: 90px;
+    }
+
+    /* もし :has が効かないブラウザ向け（iOSが古い場合）
+       → その場合は下のJS版を使います（必要なら言ってください） */
   </style>
 </head>
 
