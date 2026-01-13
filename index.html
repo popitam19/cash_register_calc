@@ -187,8 +187,38 @@
       min-width: 90px;
     }
 
-    /* もし :has が効かないブラウザ向け（iOSが古い場合）
-       → その場合は下のJS版を使います（必要なら言ってください） */
+    /* 横スクロール可能エリアを強調（内訳テーブルのみ） */
+    table.result-table:has(#splitTableBody) {
+      position: relative;
+    }
+
+    /* スワイプ案内テキスト */
+    table.result-table:has(#splitTableBody)::before {
+      content: "👉 横にスワイプできます";
+      display: block;
+      text-align: right;
+      font-size: 12px;
+      font-weight: bold;
+      color: #e11d48;
+      margin-bottom: 6px;
+    }
+
+    /* 右端フェード（スクロールできる感を出す） */
+    table.result-table:has(#splitTableBody)::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 24px;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(
+        to right,
+        rgba(255, 214, 227, 0),
+        rgba(255, 214, 227, 1)
+      );
+    }
+
   </style>
 </head>
 
