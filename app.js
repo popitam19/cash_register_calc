@@ -72,13 +72,15 @@ function betterPlan(a, b) {
 
   if (a.coinAmount !== b.coinAmount) return a.coinAmount > b.coinAmount ? a : b;
 
-  const ca = a.coins, cb = b.coins;
+  const ca = a.coins,
+    cb = b.coins;
   if (ca.ex10 !== cb.ex10) return ca.ex10 > cb.ex10 ? a : b;
   if (ca.ex50 !== cb.ex50) return ca.ex50 > cb.ex50 ? a : b;
   if (ca.ex100 !== cb.ex100) return ca.ex100 > cb.ex100 ? a : b;
   if (ca.ex500 !== cb.ex500) return ca.ex500 > cb.ex500 ? a : b;
 
-  const ba = a.bills, bb = b.bills;
+  const ba = a.bills,
+    bb = b.bills;
   if (ba.ex1000 !== bb.ex1000) return ba.ex1000 > bb.ex1000 ? a : b;
   if (ba.ex5000 !== bb.ex5000) return ba.ex5000 > bb.ex5000 ? a : b;
   if (ba.ex10000 !== bb.ex10000) return ba.ex10000 < bb.ex10000 ? a : b;
@@ -103,9 +105,12 @@ function chooseBills(rem, n1000, n5000, n10000) {
         const cand = { ex1000, ex5000, ex10000 };
         if (!best) best = cand;
         else {
-          if (cand.ex1000 !== best.ex1000) best = (cand.ex1000 > best.ex1000 ? cand : best);
-          else if (cand.ex5000 !== best.ex5000) best = (cand.ex5000 > best.ex5000 ? cand : best);
-          else if (cand.ex10000 !== best.ex10000) best = (cand.ex10000 < best.ex10000 ? cand : best);
+          if (cand.ex1000 !== best.ex1000)
+            best = cand.ex1000 > best.ex1000 ? cand : best;
+          else if (cand.ex5000 !== best.ex5000)
+            best = cand.ex5000 > best.ex5000 ? cand : best;
+          else if (cand.ex10000 !== best.ex10000)
+            best = cand.ex10000 < best.ex10000 ? cand : best;
         }
       }
     }
@@ -115,13 +120,21 @@ function chooseBills(rem, n1000, n5000, n10000) {
 
 function findBestPlan({
   barTotal,
-  c10, c50, c100, c500,
-  b1000, b5000, b10000
+  c10,
+  c50,
+  c100,
+  c500,
+  b1000,
+  b5000,
+  b10000,
 }) {
   const TARGET = 50000;
 
   if (barTotal > TARGET) {
-    return { ok: false, reason: `棒金だけで${yen(barTotal)}あり、50,000円を超えています。` };
+    return {
+      ok: false,
+      reason: `棒金だけで${yen(barTotal)}あり、50,000円を超えています。`,
+    };
   }
 
   const needAfterBars = TARGET - barTotal;
@@ -141,8 +154,8 @@ function findBestPlan({
   }
 
   const denoms = [
-    { d: 10,  max: c10,  key: "ex10" },
-    { d: 50,  max: c50,  key: "ex50" },
+    { d: 10, max: c10, key: "ex10" },
+    { d: 50, max: c50, key: "ex50" },
     { d: 100, max: c100, key: "ex100" },
     { d: 500, max: c500, key: "ex500" },
   ];
@@ -179,7 +192,11 @@ function findBestPlan({
   }
 
   if (!best) {
-    return { ok: false, reason: "現在の組み合わせでは、レジ金を50,000円ぴったりにできません。：エラー" };
+    return {
+      ok: false,
+      reason:
+        "現在の組み合わせでは、レジ金を50,000円ぴったりにできません。：エラー",
+    };
   }
 
   return best;
@@ -189,31 +206,36 @@ document.getElementById("calc").onclick = () => {
   const warn = [];
 
   // 入力
-  const bar10  = getInt("bar10");
-  const bar50  = getInt("bar50");
+  const bar10 = getInt("bar10");
+  const bar50 = getInt("bar50");
   const bar100 = getInt("bar100");
 
-  const c10   = getInt("c10");
-  const c50   = getInt("c50");
-  const c100  = getInt("c100");
-  const c500  = getInt("c500");
+  const c10 = getInt("c10");
+  const c50 = getInt("c50");
+  const c100 = getInt("c100");
+  const c500 = getInt("c500");
 
-  const b1000  = getInt("b1000");
-  const b2000  = getInt("b2000"); // 売上固定
-  const b5000  = getInt("b5000");
+  const b1000 = getInt("b1000");
+  const b2000 = getInt("b2000"); // 売上固定
+  const b5000 = getInt("b5000");
   const b10000 = getInt("b10000");
 
   // 棒金（全部レジ金）
-  const amtBar10  = bar10  * 500;
-  const amtBar50  = bar50  * 2500;
+  const amtBar10 = bar10 * 500;
+  const amtBar50 = bar50 * 2500;
   const amtBar100 = bar100 * 5000;
   const barTotal = amtBar10 + amtBar50 + amtBar100;
 
   // 計画探索（2000円札は売上固定なので探索対象から除外）
   const plan = findBestPlan({
     barTotal,
-    c10, c50, c100, c500,
-    b1000, b5000, b10000
+    c10,
+    c50,
+    c100,
+    c500,
+    b1000,
+    b5000,
+    b10000,
   });
 
   // 表示エリア
@@ -226,27 +248,48 @@ document.getElementById("calc").onclick = () => {
     warn.push(plan.reason);
 
     const salesTotal =
-      (c10*10 + c50*50 + c100*100 + c500*500) +
-      (b1000*1000 + b2000*2000 + b5000*5000 + b10000*10000);
+      c10 * 10 +
+      c50 * 50 +
+      c100 * 100 +
+      c500 * 500 +
+      (b1000 * 1000 + b2000 * 2000 + b5000 * 5000 + b10000 * 10000);
 
-    document.getElementById("salesOnly").textContent = `売上金合計：${yen(salesTotal)}`;
+    document.getElementById("salesOnly").textContent =
+      `売上金合計：${yen(salesTotal)}`;
 
-    addEnvelopeRow(tbody, "10円",   `${bar10}本`,  `0枚`, amtBar10);
-    addEnvelopeRow(tbody, "50円",   `${bar50}本`,  `0枚`, amtBar50);
-    addEnvelopeRow(tbody, "100円",  `${bar100}本`, `0枚`, amtBar100);
-    addEnvelopeRow(tbody, "500円",  "",            `0枚`, 0);
-    addEnvelopeRow(tbody, "1,000円", "",           `0枚`, 0);
-    addEnvelopeRow(tbody, "2,000円", "",           `0枚`, 0);
-    addEnvelopeRow(tbody, "5,000円", "",           `0枚`, 0);
-    addEnvelopeRow(tbody, "10,000円","",           `0枚`, 0);
+    addEnvelopeRow(tbody, "10円", `${bar10}本`, `0枚`, amtBar10);
+    addEnvelopeRow(tbody, "50円", `${bar50}本`, `0枚`, amtBar50);
+    addEnvelopeRow(tbody, "100円", `${bar100}本`, `0枚`, amtBar100);
+    addEnvelopeRow(tbody, "500円", "", `0枚`, 0);
+    addEnvelopeRow(tbody, "1,000円", "", `0枚`, 0);
+    addEnvelopeRow(tbody, "2,000円", "", `0枚`, 0);
+    addEnvelopeRow(tbody, "5,000円", "", `0枚`, 0);
+    addEnvelopeRow(tbody, "10,000円", "", `0枚`, 0);
 
     /* ===== 追加：レジ金/売上金 の枚数表（不可能時） ===== */
     renderSplitTable(
       "splitTableBody",
-      { y10: 0, y50: 0, y100: 0, y500: 0, y1000: 0, y2000: 0, y5000: 0, y10000: 0 },
-      { y10: c10, y50: c50, y100: c100, y500: c500, y1000: b1000, y2000: b2000, y5000: b5000, y10000: b10000 }
+      {
+        y10: 0,
+        y50: 0,
+        y100: 0,
+        y500: 0,
+        y1000: 0,
+        y2000: 0,
+        y5000: 0,
+        y10000: 0,
+      },
+      {
+        y10: c10,
+        y50: c50,
+        y100: c100,
+        y500: c500,
+        y1000: b1000,
+        y2000: b2000,
+        y5000: b5000,
+        y10000: b10000,
+      },
     );
-
 
     document.getElementById("warn").textContent = "注意: " + warn.join(" / ");
     return;
@@ -266,80 +309,118 @@ document.getElementById("calc").onclick = () => {
   const ex2000 = 0;
 
   // レジ金（封筒）各金額
-  const amt10   = ex10   * 10;
-  const amt50   = ex50   * 50;
-  const amt100  = ex100  * 100;
-  const amt500  = ex500  * 500;
+  const amt10 = ex10 * 10;
+  const amt50 = ex50 * 50;
+  const amt100 = ex100 * 100;
+  const amt500 = ex500 * 500;
   const amt1000 = ex1000 * 1000;
   const amt2000 = 0; // 固定
   const amt5000 = ex5000 * 5000;
-  const amt10000= ex10000* 10000;
+  const amt10000 = ex10000 * 10000;
 
   // 売上合計
-  const sales10  = c10  - ex10;
-  const sales50  = c50  - ex50;
+  const sales10 = c10 - ex10;
+  const sales50 = c50 - ex50;
   const sales100 = c100 - ex100;
   const sales500 = c500 - ex500;
 
-  const sales1000  = b1000  - ex1000;
-  const sales2000  = b2000; // 全部売上
-  const sales5000  = b5000  - ex5000;
+  const sales1000 = b1000 - ex1000;
+  const sales2000 = b2000; // 全部売上
+  const sales5000 = b5000 - ex5000;
   const sales10000 = b10000 - ex10000;
 
   const salesTotal =
-    sales10*10 + sales50*50 + sales100*100 + sales500*500 +
-    sales1000*1000 + sales2000*2000 + sales5000*5000 + sales10000*10000;
+    sales10 * 10 +
+    sales50 * 50 +
+    sales100 * 100 +
+    sales500 * 500 +
+    sales1000 * 1000 +
+    sales2000 * 2000 +
+    sales5000 * 5000 +
+    sales10000 * 10000;
 
-  document.getElementById("salesOnly").textContent = `売上金合計：${yen(salesTotal)}`;
+  document.getElementById("salesOnly").textContent =
+    `売上金合計：${yen(salesTotal)}`;
 
   // 封筒に入れること（レジ金）表：指定形式
-  addEnvelopeRow(tbody, "10円",    `${bar10}本`,   `${ex10}枚`,    amtBar10  + amt10);
-  addEnvelopeRow(tbody, "50円",    `${bar50}本`,   `${ex50}枚`,    amtBar50  + amt50);
-  addEnvelopeRow(tbody, "100円",   `${bar100}本`,  `${ex100}枚`,   amtBar100 + amt100);
-  addEnvelopeRow(tbody, "500円",   "",             `${ex500}枚`,   amt500);
-  addEnvelopeRow(tbody, "1,000円", "",             `${ex1000}枚`,  amt1000);
-  addEnvelopeRow(tbody, "2,000円", "",             `0枚`,         amt2000);
-  addEnvelopeRow(tbody, "5,000円", "",             `${ex5000}枚`,  amt5000);
-  addEnvelopeRow(tbody, "10,000円","",             `${ex10000}枚`, amt10000);
+  addEnvelopeRow(tbody, "10円", `${bar10}本`, `${ex10}枚`, amtBar10 + amt10);
+  addEnvelopeRow(tbody, "50円", `${bar50}本`, `${ex50}枚`, amtBar50 + amt50);
+  addEnvelopeRow(
+    tbody,
+    "100円",
+    `${bar100}本`,
+    `${ex100}枚`,
+    amtBar100 + amt100,
+  );
+  addEnvelopeRow(tbody, "500円", "", `${ex500}枚`, amt500);
+  addEnvelopeRow(tbody, "1,000円", "", `${ex1000}枚`, amt1000);
+  addEnvelopeRow(tbody, "2,000円", "", `0枚`, amt2000);
+  addEnvelopeRow(tbody, "5,000円", "", `${ex5000}枚`, amt5000);
+  addEnvelopeRow(tbody, "10,000円", "", `${ex10000}枚`, amt10000);
 
   // 最終チェック：レジ金は必ず50,000円
   const exchangeTotal =
-    barTotal +
-    amt10 + amt50 + amt100 + amt500 +
-    amt1000 + amt5000 + amt10000;
+    barTotal + amt10 + amt50 + amt100 + amt500 + amt1000 + amt5000 + amt10000;
 
   if (exchangeTotal !== 50000) {
-    warn.push(`内部計算の結果が50,000円になっていません（現在 ${yen(exchangeTotal)}）。`);
+    warn.push(
+      `内部計算の結果が50,000円になっていません（現在 ${yen(exchangeTotal)}）。`,
+    );
   }
 
-  document.getElementById("warn").textContent = warn.length ? "注意: " + warn.join(" / ") : "";
+  document.getElementById("warn").textContent = warn.length
+    ? "注意: " + warn.join(" / ")
+    : "";
 
   /* ===== 追加：レジ金/売上金 の枚数表（成功時） ===== */
   renderSplitTable(
-  "splitTableBody",
-  {
-    y10: ex10,
-    y50: ex50,
-    y100: ex100,
-    y500: ex500,
-    y1000: ex1000,
-    y2000: 0,
-    y5000: ex5000,
-    y10000: ex10000
-  },
-  {
-    y10: sales10,
-    y50: sales50,
-    y100: sales100,
-    y500: sales500,
-    y1000: sales1000,
-    y2000: sales2000,
-    y5000: sales5000,
-    y10000: sales10000
-  }
-);
-
+    "splitTableBody",
+    {
+      y10: ex10,
+      y50: ex50,
+      y100: ex100,
+      y500: ex500,
+      y1000: ex1000,
+      y2000: 0,
+      y5000: ex5000,
+      y10000: ex10000,
+    },
+    {
+      y10: sales10,
+      y50: sales50,
+      y100: sales100,
+      y500: sales500,
+      y1000: sales1000,
+      y2000: sales2000,
+      y5000: sales5000,
+      y10000: sales10000,
+    },
+  );
 
   // 内部用：yenToNum（不可能時の表示にだけ使用）
-  function yenToNum(x) { return x; }
+  function yenToNum(x) {
+    return x;
+  }
 };
+
+/* ===== 追加：整合性の確認用 7項目の自動集計ロジック ===== */
+const updateCheckTotal = () => {
+  const val1 = getInt("check1");
+  const val2 = getInt("check2");
+  const val3 = getInt("check3");
+  const val4 = getInt("check4");
+  const val5 = getInt("check5");
+  const val6 = getInt("check6");
+  const val7 = getInt("check7");
+
+  // 7つの入力値をすべて足し合わせる
+  const total = val1 + val2 - val3 + val4 + val5 + val6 + val7;
+
+  // 既存のyen関数を使って、3桁カンマ区切りで画面に表示
+  document.getElementById("checkTotal").textContent = `確認用合計：${yen(total)}`;
+};
+
+// クラス名「check-input」がついたすべての入力欄に、入力時の自動計算イベントを設定
+document.querySelectorAll(".check-input").forEach((input) => {
+  input.addEventListener("input", updateCheckTotal);
+});
