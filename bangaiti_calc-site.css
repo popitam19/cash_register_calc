@@ -1,0 +1,190 @@
+/* サイト全体 */
+body {
+  font-family: system-ui, sans-serif;
+  padding: 20px;
+  color: #111827;
+  background-color: #ffe4ec;
+}
+
+/* 見出し */
+h1 {
+  margin: 0 0 8px;
+}
+h2 {
+  margin: 0 0 20px;
+}
+h3 {
+  color: #e11d48;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 補足文字 */
+.muted {
+  color: #6b7280;
+  font-size: 14px;
+}
+.muted2 {
+  color: #e11d48;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* 入力エリア */
+.card {
+  border: 1px solid #f5a3bd;
+  border-radius: 12px;
+  padding: 14px;
+  margin: 12px 0;
+  background-color: #ffffff;
+}
+
+/* 入力レイアウト（PC） */
+.grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+/* 入力欄＋単位（本/枚） */
+.input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px; /* PCで伸びすぎ防止 */
+}
+
+/* 入力ボックス・選択・ボタン（基本設定） */
+input,
+select,
+button {
+  padding: 8px 10px;
+  margin: 4px;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* 入力ボックス個別のデザイン */
+input {
+  border: 2px solid #e11d48;
+  width: 100%;
+  background-color: #fff;
+}
+
+.input-with-unit input {
+  flex: 1;
+  min-width: 0;
+}
+
+.unit {
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+/* ボタン個別のデザイン */
+button {
+  border: none;
+  background: #e11d48;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px 14px; /* クリックしやすさを優先 */
+}
+
+/* 注意文 */
+.warn {
+  color: #b45309;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* 結果表 */
+.result-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 8px;
+  background-color: #ffd6e3;
+  border: 2px solid #000;
+}
+.result-table th {
+  background-color: #e11d48;
+  color: #000;
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: right;
+}
+.result-table td {
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: right;
+  color: #000;
+  background-color: #ffd6e3;
+}
+.result-table th:first-child,
+.result-table td:first-child {
+  text-align: left;
+}
+
+/* スマホ対応 */
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+
+  /* 1列にして崩れない */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .input-with-unit {
+    max-width: 100%; /* スマホは全幅OK */
+    margin-bottom: 8px;
+  }
+}
+
+/* ============================
+   内訳（splitTable）だけスマホで横スクロール対応
+   ============================ */
+table.result-table:has(#splitTableBody) {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  width: max-content;
+  background-color: transparent;
+  position: relative;
+}
+
+table.result-table:has(#splitTableBody) thead,
+table.result-table:has(#splitTableBody) tbody,
+table.result-table:has(#splitTableBody) tr {
+  width: max-content;
+}
+
+table.result-table:has(#splitTableBody) th,
+table.result-table:has(#splitTableBody) td {
+  min-width: 88px;
+}
+
+table.result-table:has(#splitTableBody) th:first-child,
+table.result-table:has(#splitTableBody) td:first-child {
+  min-width: 90px;
+}
+
+table.result-table:has(#splitTableBody)::before {
+  content: "👉 横にスワイプできます";
+  display: block;
+  text-align: right;
+  font-size: 12px;
+  font-weight: bold;
+  color: #e11d48;
+  margin-bottom: 6px;
+}
